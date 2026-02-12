@@ -26,6 +26,7 @@ float get_value(char parteiname[], float precentages[])
 
 int main()
 {
+    clear();
     int w = get_screen_width();
     int h = get_screen_height();
     locate(1, 1);
@@ -68,4 +69,4 @@ int main()
     }
 
     return 0;
-}
+} //+-30mins

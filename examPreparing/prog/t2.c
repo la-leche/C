@@ -30,75 +30,94 @@ char wortfeld[NUMBER_OF_WORDS][WORTLAENGE] = {
     "XYLOPHONSPIELERIN",
 };
 
-void ergaenze_buchstabe(char secret[], const char wort[], char buchstabe)
+// get real length
+int secretLength = 0;
+int foundChars = 0;
+
+void ergaenze_buchstabe(char *r, char *h)
 {
-    buchstabe = toupper(buchstabe);
-    for (size_t i = 0; i < strlen(wort); ++i)
+    char userChar;
+    printf("Welcher Buchstabe soll ergänzt werden?");
+    scanf(" %c", &userChar);
+    // printf("%d", (int)userChar);
+    if ((int)userChar < 65 || (int)userChar > 90)
     {
-        if (toupper(wort[i]) == buchstabe)
+        printf("Das ist doch kein Buchstabe!\n");
+        return;
+    }
+
+    for (size_t i = 0; i < secretLength; i++)
+    {
+        if (r[i] == userChar && r[i] != h[i])
         {
-            secret[i] = toupper(wort[i]);
+            h[i] = userChar;
+            foundChars++;
         }
     }
+    // return 0;
 }
 
 int main()
 {
-
     srand(time(NULL));
-    int word_index = rand() % NUMBER_OF_WORDS;
-    printf("Cheat: %s\n", wortfeld[word_index]); // a)
-    char *wort = wortfeld[word_index];
-    size_t len = strlen(wort);
+    // create secret
+    char secret[WORTLAENGE];
+    strcpy(secret, wortfeld[rand() % NUMBER_OF_WORDS]);
 
-    char secret[len];
-
-    for (size_t i = 0; i < len; ++i)
+    while (secret[secretLength])
     {
-        secret[i] = '-'; // b)
-        secret[len] = '\0';
+        secretLength++;
     }
 
-    while (1)
+    // prepare shown and fill with -
+    char shownWord[secretLength + 1]; // due to \0
+    for (size_t i = 0; i < secretLength; i++)
     {
-        printf("\nHalb: %s\n", secret);
-        printf("1: Buchstabe, 2: Loesen? ");
-        int wahl;
-        scanf(" %d", &wahl);
-        if (wahl == 1)
+        shownWord[i] = '-';
+    }
+    shownWord[secretLength] = '\0';
+
+    // init input
+    int choice;
+    printf("%s\n", secret);
+    do
+    {
+
+        printf("Aktueller Ratestand: %s\n", shownWord);
+        printf("%ld\n", sizeof(shownWord));
+        printf("Was wollen Sie tun: (1) Buchstaben ergänzen (2) Lösen:");
+        scanf("%d", &choice);
+        if (choice == 1)
         {
-            char input;
-            printf("Buchstabe: ");
-            scanf(" %c", &input);
-            ergaenze_buchstabe(secret, wort, input);
+            ergaenze_buchstabe(secret, shownWord);
         }
-        else if (wahl == 2)
+        else if (choice == 2)
         {
-            char loesung[len];
-            scanf("%s", loesung);
+            char userSolution[secretLength + 1];
+            printf("Ok, dann versuchen Sie zu lösen: ");
+            scanf("%s", userSolution);
 
-            // uppercase
-            for (size_t i = 0; i < strlen(loesung); i++)
-            {
-                loesung[i] = toupper(loesung[i]);
-            }
+            int points = secretLength - foundChars;
+            int falseAnswer = 0;
 
-            if (strcmp(loesung, wort) == 0)
+            for (size_t i = 0; i < secretLength; i++)
             {
-                int punkte = 0;
-                for (size_t i = 0; i < len; ++i)
+                if (secret[i] != userSolution[i])
                 {
-                    if (secret[i] == '-')
-                        punkte++;
+                    falseAnswer = 1;
                 }
-                printf("Das war richtig! Sie bekommen %d Punkte. Herzlichen Glueckwunsch!\n", punkte);
+            }
+            if (!falseAnswer)
+            {
+                printf("Das war richtig! Sie bekommen %d Punkte. Herzlichen Glückwunsch!", points);
             }
             else
             {
-                printf("Leider falsch. 0 Punkte. Richtig waere gewesen: %s\n", wort);
+                printf("Leider falsch. 0 Punkte. Richtig wäre gewesen: %s\n", secret);
+                break;
             }
-            return 0;
         }
-    }
+    } while (foundChars != secretLength);
+
     return 0;
-}
+} // needed 1 hour
