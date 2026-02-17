@@ -33,7 +33,7 @@ int main()
     set_color(0, "red");
     char text[44] = "K L A U S U R E N P H A S E ! L E R N E N !";
     locate((W / 2) - 22, H / 2);
-    printf(text);
+    printf("%s", text);
 
     locate(1, H);
 

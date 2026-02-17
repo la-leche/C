@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include <ctype.h>
+// #include <ctype.h>
 
 int main()
 {
@@ -24,7 +24,7 @@ int main()
     for (int i = 0; i < (wort1length > wort2length ? wort1length : wort2length); i++)
     {
         if ((wort1[i] > 64) && (wort1[i] < 91)) // uppercase A-Z = 65-90
-            wort1[i] ^= 0x20;                   // 2^6 flip => Flip
+            wort1[i] ^= 0x20;                   // 2^5 flip => 0->1
 
         if ((wort2[i] > 64) && (wort2[i] < 91))
             wort2[i] ^= 0x20;

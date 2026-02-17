@@ -3,3 +3,4 @@
 /examPreparing/*.pdf
 *.py
 a.out
+/*.o
